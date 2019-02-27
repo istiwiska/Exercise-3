@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Exercise 3</title>
+	<style>
+		* {
+		  box-sizing: border-box;
+		}
+
+		#myInput {
+		  background-image: url('/css/searchicon.png');
+		  background-position: 10px 10px;
+		  background-repeat: no-repeat;
+		  width: 100%;
+		  font-size: 16px;
+		  padding: 12px 20px 12px 40px;
+		  border: 1px solid #ddd;
+		  margin-bottom: 12px;
+		}
+
+		#myTable {
+		  border-collapse: collapse;
+		  width: 100%;
+		  border: 1px solid #ddd;
+		  font-size: 18px;
+		}
+
+		#myTable th, #myTable td {
+		  text-align: left;
+		  padding: 12px;
+		}
+
+		#myTable tr {
+		  border-bottom: 1px solid #ddd;
+		}
+
+		#myTable tr.header, #myTable tr:hover {
+		  background-color: #f1f1f1;
+		}
+		</style>
+</head>
+<body>
+	<h1>Exercise 3</h1>
+	<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+	<table id="myTable" border="1">
+		<tr class="header">
+			<th>Name</th>
+			<th>Climate</th>
+			<th>Terrain</th>
+			<th>Residents</th>
+			<th>Films</th>
+		</tr>
+	</table>
+	<script type="text/javascript">
+		var table = document.getElementById('myTable');
+		var url = "https://swapi.co/api/planets/";
+		var request = new XMLHttpRequest();
+		request.open('GET',url);
+		request.responseType = 'json';
+		request.send();
+
+		request.onload = function(){
+			var a = "";
+			var data = request.response;
+			showData(data);
+		}	
+
+		function myFunction() {
+		  var input, filter, table, tr, td, i, txtValue;
+		  input = document.getElementById("myInput");
+		  filter = input.value.toUpperCase();
+		  table = document.getElementById("myTable");
+		  tr = table.getElementsByTagName("tr");
+		  for (i = 0; i < tr.length; i++) {
+		  	console.log(tr.length);
+		    td = tr[i].getElementsByTagName("td")[0];
+		    if (td) {
+		      txtValue = td.textContent || td.innerText;
+		      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		        tr[i].style.display = "";
+		      } else {
+		        tr[i].style.display = "none";
+		      }
+		    }       
+		  }
+		}
+
+		function showData(json){
+			var results = json.results;
+			for(var i=0;i<results.length;i++){
+				var tr = "<tr>";
+				tr+= "<td>"+results[i].name+"</td>"+"<td>"+results[i].climate+"</td><td>"+results[i].terrain+"</td>";
+				var jml_resident = results[i].residents;
+				tr+= "<td><ul>";
+				if(jml_resident.length>0){
+					for(var j=0;j<jml_resident.length;j++){
+						tr+= "<li><a href='"+jml_resident[j]+"'>"+jml_resident[j]+"</a></li>";
+					}
+				}else{
+					tr+= "<li> Tidak ada data </li>";
+				}
+				tr+= "</ul></td>";
+				var jml_films = results[i].films;
+				tr+= "<td><ul>";
+				if(jml_films.length>0){
+					for(var j=0;j<jml_films.length;j++){
+						tr+= "<li><a href='"+jml_films[j]+"'>"+jml_films[j]+"</a></li>";
+					}
+				}else{
+					tr+= "<li> Tidak ada data </li>";
+				}
+				tr+= "</ul></td></tr>";
+				table.innerHTML += tr;
+			}
+		}
+
+	</script>
+</body>
+</html>
